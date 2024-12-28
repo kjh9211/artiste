@@ -1,0 +1,6 @@
+on tab completer for "/스코어보드":
+	#In this line we need to put the command.
+	set {_completers::*} to "켜기" and "끄기"
+	#In this line we need to put the arguments to complete.
+	loop {_completers::*}:
+		add loop-value to completions

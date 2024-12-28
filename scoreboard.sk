@@ -1,0 +1,50 @@
+every 1 seconds:
+	loop all players:
+		if {스코어보드.%loop-player%} is true:
+			wipe loop-players's sidebar
+			set name of sidebar of loop-player to "&c&n테스트서버"
+			set score "" in sidebar of loop-player to 7
+			if {닉네임::%loop-player%} is not set:
+				set score "&a닉네임 &f: &7%loop-player%" in sidebar of loop-player to 6
+			else:
+				set score "&a닉네임 &f: %{닉네임::%uuid of loop-player%}%" in sidebar of loop-player to 6
+			set score " " in sidebar of loop-player to 5
+			set score "&6돈 &f: &e%{돈::%uuid of loop-player%}%&f원" in sidebar of loop-player to 4
+			set score "&2칭호 &f: %{칭호장착::%uuid of loop-player%}%" in sidebar of loop-player to 3
+			set score "&b플레이타임 &f: %{플레이타임::%uuid of loop-player%::일}%일 %{플레이타임::%uuid of loop-player%::시}%시간 %{플레이타임::%uuid of loop-player%::분}%분 %{플레이타임::%uuid of loop-player%::초}%초" in sidebar of loop-player to 2
+			set score "&c현재시간 &f: %now%" in sidebar of loop-player to 1
+			set score "&d접속자 수 &f: %number of all players%명" in sidebar of loop-player to 0
+		
+every 1 seconds:
+	loop players:
+		if {플레이타임::%uuid of loop-player%::초} is not set:
+			set {플레이타임::%uuid of loop-player%::초} to 0
+			set {플레이타임::%uuid of loop-player%::분} to 0
+			set {플레이타임::%uuid of loop-player%::시} to 0
+			set {플레이타임::%uuid of loop-player%::일} to 0
+		else:
+			add 1 to {플레이타임::%uuid of loop-player%::초}
+			wait 1 ticks
+			if {플레이타임::%uuid of loop-player%::초} is 60:
+				set {플레이타임::%uuid of loop-player%::초} to 0
+				add 1 to {플레이타임::%uuid of loop-player%::분}
+			wait 1 ticks
+			if {플레이타임::%uuid of loop-player%::분} is 60:
+				set {플레이타임::%uuid of loop-player%::분} to 0
+				add 1 to {플레이타임::%uuid of loop-player%::시}
+			wait 1 ticks
+			if {플레이타임::%uuid of loop-player%::시} is 24:
+				set {플레이타임::%uuid of loop-player%::시} to 0
+				add 1 to {플레이타임::%uuid of loop-player%::일}
+				
+command /스코어보드 [<text>]:
+    trigger:
+        if arg 1 is "켜기":
+            set {스코어보드.%player%} to true
+            message "&e&l스코어보드 활성화"
+
+        if arg 1 is "끄기":
+            wipe player's sidebar
+            set {스코어보드.%player%} to false
+            message "&4&l스코어보드 비활성화"
+#

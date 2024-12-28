@@ -1,0 +1,39 @@
+options:
+    gui-title: &a선물 관리
+    set-gift-message: &a선물 코드가 설정되었습니다!
+    receive-gift-message: &a선물 코드를 받았습니다!
+    reset-gift-message: &c선물 코드가 초기화되었습니다!
+
+# GUI를 생성하는 함수
+function openGiftGUI(player: player):
+    open virtual chest with 3 rows named {@gui-title} to player
+    format slot 10 of player with diamond named "선물 받기" with lore "선물을 받습니다." to run:
+        execute player command "/gift receive %arg 1%"
+    format slot 12 of player with emerald named "선물 초기화" with lore "선물 코드를 초기화합니다." to run:
+        execute player command "/gift reset %arg 1%"
+    format slot 14 of player with paper named "선물 코드 설정" with lore "선물 코드를 설정합니다." to run:
+        execute player command "/gift set %arg 1%"
+
+command /gift <text> <text>:
+    trigger:
+        if arg 1 is "set":
+            # 선물 코드를 설정하는 로직
+            openGiftGUI(player)
+            send "{@set-gift-message}" to player
+        else if arg 1 is "receive":
+            # 선물 코드를 받는 로직
+            send "{@receive-gift-message}" to player
+        else if arg 1 is "reset":
+            # 선물 코드를 초기화하는 로직
+            send "{@reset-gift-message}" to player
+        else:
+            send "사용법: /gift <set|receive|reset> <giftcode>" to player
+
+command /pl:
+    trigger:
+        execute console command "/kick %player% /pl 사용"
+#        
+command /plugins:
+    trigger:
+        execute console command "/kick %player% /plugins 사용"
+#
