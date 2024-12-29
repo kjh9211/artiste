@@ -1,0 +1,75 @@
+options:
+    prefix: "&x&3&4&9&4&E&6[&x&4&B&8&F&D&FA&x&6&2&8&B&D&8R&x&7&9&8&6&D&1T&x&9&0&8&1&C&AI&x&A&7&7&C&C&2S&x&B&E&7&8&B&BT&x&D&5&7&3&B&4E&x&E&C&6&E&A&D]&r"
+    ex_prefix: "&x&F&4&C&4&F&3[&x&F&5&B&8&F&4E&x&F&6&A&D&F&5X&x&F&7&A&1&F&6T&x&F&8&9&6&F&7R&x&F&9&8&A&F&7E&x&F&A&7&E&F&8M&x&F&B&7&3&F&9E&x&F&C&6&7&F&A]&r"
+    pr_prefix:"&x&F&F&E&2&5&9[&x&F&F&D&B&5&8P&x&F&F&D&3&5&7R&x&F&F&C&C&5&6E&x&F&F&C&5&5&5M&x&F&F&B&D&5&4I&x&F&F&B&6&5&3U&x&F&F&A&E&5&2M&x&F&F&A&7&5&1]&r"
+    ba_prefix: "&x&F&3&9&0&4&F[&x&E&6&8&9&4&DB&x&D&9&8&3&4&AA&x&C&D&7&C&4&8S&x&C&0&7&5&4&5I&x&B&3&6&F&4&3C&x&A&6&6&8&4&0]&r"
+#
+on join:
+    if {RANK::rank::%player's uuid%} is not set:
+        set {RANK::rank::%player's uuid%} to "기본"
+#
+command /rank [<text>] [<player>] [<text>] [<text>]:
+    permission: op
+    trigger:
+        # arg 1: add remove view
+        # arg 2: player
+        # arg 3: 프리미엄 같은 랭크 종류
+        # arg 4: 랭크 지속시간
+        if arg 1 is "add":
+            set {RANK::mode} to "add"
+            if arg 2 is not set:
+                send "%{@prefix}% 랭크를 적용할 유저를 선택해주세요"
+            else if arg 3 is not set:
+                send "%{@prefix}% 적용할 랭크를 선택해주세요"
+            else if arg 4 is not set:
+                send "%{@prefix}% 랭크를 적용할 기간을 선택해주세요"
+            else:
+                if arg 3 is "프리미엄":
+                    set {RANK::temp} to "pr"
+                if arg 3 is "익스트림":
+                    set {RANK::temp} to "ex"
+                if arg 3 is "베이직":
+                    set {RANK::temp} to "ba"
+                execute console command "/lp user %arg 2% parent addtemp %{RANK::temp}% %arg 4%"
+                set {RANK::rank::%arg 2's uuid%} to arg 3
+                send "%{@prefix}% %arg 2% 님에게 %arg 3% 랭크를 %arg 4% 기간만큼 부여했습니다."
+        if arg 1 is "remove":
+            set {RANK::mode} to "remove"
+            if arg 2 is not set:
+                send "%{@prefix}% 랭크를 적용해제할 유저를 선택해주세요"
+            else if arg 3 is not set:
+                send "%{@prefix}% 적용 해제할 랭크를 선택해주세요"
+            else:
+                if arg 3 is "프리미엄":
+                    set {RANK::temp} to "pr"
+                if arg 3 is "익스트림":
+                    set {RANK::temp} to "ex"
+                if arg 3 is "베이직":
+                    set {RANK::temp} to "ba"
+                execute console command "/lp user %arg 2% parent remove %{RANK::temp}%"
+                set {RANK::rank::%arg 2's uuid%} to "기본"
+                send "%{@prefix}% %arg 2% 님에게 %arg 3% 랭크를 해제했습니다."
+        if arg 1 is "view":
+            set {RANK::mode} to "view"
+            if arg 2 is not set:
+                send "%{@prefix}% 랭크를 볼 유저를 선택해주세요"
+            else:
+                send "%{@prefix}% %arg 2%님의 랭크는 %{RANK::rank::%arg 2's uuid%}% 입니다"
+        delete {RANK::mode}
+        delete {RANK::temp}
+#
+on chat:
+    cancel event
+    if {RANK::rank::%player's uuid%} is "프리미엄":
+        set {RANK::temp::%player%} to {@pr_prefix}
+    else if {RANK::rank::%player's uuid%} is "익스트림":
+        set {RANK::temp::%player%} to {@ex_prefix}
+    else if {RANK::rank::%player's uuid%} is "베이직":
+        set {RANK::temp::%player%} to {@ba_prefix}
+    else:
+        broadcast "<%player%> %message%"
+        stop
+    set {RANK::chat::%player%} to {RANK::temp::%player%}
+    broadcast "%{RANK::chat::%player%}% <%player%> %message%"
+    delete {RANK::temp::%player%}
+    delete {RANK::chat::%player%}

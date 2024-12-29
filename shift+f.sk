@@ -1,0 +1,9 @@
+on swap hand items:
+	if player is sneaking:
+		cancel event
+		execute player command "메뉴"
+		
+command /메뉴:
+	trigger:
+		open chest with 5 rows named "ARTISTE" to player
+        

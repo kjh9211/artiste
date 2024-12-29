@@ -2,15 +2,11 @@ every 1 seconds:
 	loop all players:
 		if {스코어보드.%loop-player%} is true:
 			wipe loop-players's sidebar
-			set name of sidebar of loop-player to "&c&n테스트서버"
+			set name of sidebar of loop-player to "&c&n아르티스 야생서버"
 			set score "" in sidebar of loop-player to 7
-			if {닉네임::%loop-player%} is not set:
-				set score "&a닉네임 &f: &7%loop-player%" in sidebar of loop-player to 6
-			else:
-				set score "&a닉네임 &f: %{닉네임::%uuid of loop-player%}%" in sidebar of loop-player to 6
+			set score "&a닉네임 &f: &7%loop-player%" in sidebar of loop-player to 6
 			set score " " in sidebar of loop-player to 5
 			set score "&6돈 &f: &e%{돈::%uuid of loop-player%}%&f원" in sidebar of loop-player to 4
-			set score "&2칭호 &f: %{칭호장착::%uuid of loop-player%}%" in sidebar of loop-player to 3
 			set score "&b플레이타임 &f: %{플레이타임::%uuid of loop-player%::일}%일 %{플레이타임::%uuid of loop-player%::시}%시간 %{플레이타임::%uuid of loop-player%::분}%분 %{플레이타임::%uuid of loop-player%::초}%초" in sidebar of loop-player to 2
 			set score "&c현재시간 &f: %now%" in sidebar of loop-player to 1
 			set score "&d접속자 수 &f: %number of all players%명" in sidebar of loop-player to 0

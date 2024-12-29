@@ -1,0 +1,139 @@
+options:
+	메뉴: &b&l[&2&lMenu&b&l]&f
+	설명: &a&l[&6&lMenu Help&a&l]&f
+	오류: &4&l[&c&l오류&4&l]&f
+	
+on load:
+	if {메뉴::이름} is not set:
+		set {메뉴::이름} to "&a메뉴"
+	if {메뉴::줄수} is not set:
+		set {메뉴::줄수} to 6
+	set {_n} to 0
+	loop 54 times:
+		if {메뉴::권한::%{_n}%} is not set:
+			set {메뉴::권한::%{_n}%} to "player"
+		add 1 to {_n}
+		
+on chat:
+	if {메뉴::명령어설정::%player%} is set:
+		cancel event
+		set {메뉴::명령어::%{메뉴::명령어설정::%player%}%} to "%message%"
+		message "{@메뉴} %{메뉴::명령어설정::%player%}%번의 명령어가 &c&l%message%&f로 설정되었습니다."
+		delete {메뉴::명령어설정::%player%}
+	if {메뉴::이름설정::%player%} is true:
+		cancel event
+		set {메뉴::이름} to "%colored message%"
+		message "{@메뉴} 메뉴 이름이 %colored message%&f으로 설정되었습니다."
+		delete {메뉴::이름설정::%player%}
+		
+on swap hand items:
+	if player is sneaking:
+		cancel event
+		execute player command "메뉴"
+		
+command /메뉴:
+	trigger:
+		set {메뉴::열림::%player%} to "true"
+		open chest with {메뉴::줄수} rows named "%{메뉴::이름}%" to player
+		set {_n} to 0
+		loop {메뉴::줄수}*9 times:
+			set slot {_n} of current inventory of player to {메뉴::아이템::%{_n}%}
+			add 1 to {_n}
+			
+command /메뉴설정 [<text>] [<text>] [<text>]:
+	trigger:
+		if player is op:
+			if arg 1 is not set:
+				message "{@설명} /메뉴설정 초기화"
+				message "{@설명} /메뉴설정 아이템"
+				message "{@설명} /메뉴설정 명령어전체삭제"
+				message "{@설명} /메뉴설정 이름"
+				message "{@설명} /메뉴설정 줄수 [1~6]"
+				message "{@설명} /메뉴설정 명령어 [0 ~ 53]"
+				message "{@설명} /메뉴설정 명령어삭제 [0 ~ 53]"
+				message "{@설명} /메뉴설정 실행권한 [0 ~ 53] [player, op, console]"
+			else if arg 1 is "초기화":
+				delete {메뉴::*}
+				message "{@메뉴} 모든 메뉴설정이 초기화 되었습니다."
+				set {메뉴::이름} to "&a메뉴"
+				set {메뉴::줄수} to 6
+				set {_n} to 0
+				loop 54 times:
+					if {메뉴::권한::%{_n}%} is not set:
+						set {메뉴::권한::%{_n}%} to "player"
+					add 1 to {_n}
+			else if arg 1 is "아이템":
+				open chest with {메뉴::줄수} rows named "%{메뉴::이름}%&c 설정" to player
+				set {_n} to 0
+				loop {메뉴::줄수}*9 times:
+					set slot {_n} of current inventory of player to {메뉴::아이템::%{_n}%}
+					add 1 to {_n}
+			else if arg 1 is "명령어전체삭제":
+				delete {메뉴::명령어::*}
+			else if arg 1 is "이름":
+				set {메뉴::이름설정::%player%} to true
+				message "{@메뉴} 메뉴의 이름을 채팅창에 입력해주세요."
+			else:
+				set {_n} to "%arg 2%" parsed as integer
+				if {_n} is not set:
+					message "{@오류} 숫자를 입력해주세요."
+				else if {_n} > 53:
+					message "{@오류} 53이하의 입력해주세요."
+				else:
+					if arg 1 is "줄수":
+						if {_n} <= 0:
+							message "{@오류} 1~6사이에 숫자를 입력해주세요."
+						else if {_n} > 6:
+							message "{@오류} 1~6사이에 숫자를 입력해주세요."
+						else:
+							set {메뉴::줄수} to {_n}
+							message "{@메뉴} 메뉴 줄 수가 %{_n}%으로 설정되었습니다."
+					else if arg 1 is "명령어":
+						set {메뉴::명령어설정::%player%} to {_n}
+						message "{@메뉴} %{_n}%번 슬롯을 누르면 실행될 명령어를 채팅창에 입력해주세요."
+						message "{@메뉴} 플레이어 입력이 필요할 시 &l[플레이어]&f으로 입력해주세요."
+					else if arg 1 is "명령어삭제":
+						delete {메뉴::명령어::%{_n}%}
+						message "{@메뉴} %{_n}%번 슬롯의 명령어가 삭제되었습니다."
+					else if arg 1 is "실행권한":
+						if arg 3 isn't "player" or "op" or "console":
+							message "{@오류} player, op, console 중 입력해주세요."
+						else:
+							set {메뉴::권한::%{_n}%} to "%arg 3%"
+							message "{@메뉴} %{_n}%번 슬롯의 명령어 권한이 %arg 3%으로 설정되었습니다."
+					else:
+						message "{@오류} 올바른 명령어를 입력해주세요."
+#						
+on inventory click:
+	if name of event-inventory is "%{메뉴::이름}%":
+		cancel event
+		# 클릭한 슬롯의 아이템 가져오기
+		set {_clickedItem} to name of event-slot # 슬롯의 아이템의 이름
+		set {_n} to index of event-slot
+		
+		send {_clickedItem} to player
+		send {_n} to player
+
+		# 메뉴에 설정된 아이템과 비교
+		if {메뉴::아이템::%{_n}%}'s name is {_clickedItem}:
+			if {메뉴::명령어::%{_n}%} is set:
+				set {_command} to {메뉴::명령어::%{_n}%}
+				replace "[플레이어]" with "%player%" in {_command}
+				if {메뉴::권한::%{_n}%} is "player":
+					execute player command "%{_command}%"
+					close player's inventory
+				else if {메뉴::권한::%{_n}%} is "console":
+					execute console command "%{_command}%"
+					close player's inventory
+				else if {메뉴::권한::%{_n}%} is "op":
+					execute console command "op %player%"
+					execute player command "%{_command}%"
+					execute console command "deop %player%"
+					close player's inventory
+#											
+on inventory close:
+	if name of event-inventory is "%{메뉴::이름}%&c 설정":
+		set {_n} to 0
+		loop 54 times:
+			set {메뉴::아이템::%{_n}%} to slot {_n} of current inventory
+			add 1 to {_n}
