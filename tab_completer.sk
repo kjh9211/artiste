@@ -1,18 +1,14 @@
+# made by kjh9211
+# made in artiste
 on tab completer for "/스코어보드":
 	#In this line we need to put the command.
 	set {_completers::*} to "켜기" and "끄기"
 	#In this line we need to put the arguments to complete.
 	loop {_completers::*}:
 		add loop-value to completions
-#
-# on tab completer for "/메뉴설정":
-# 	#In this line we need to put the command.
-# 	set {_completers::*} to "초기화" , "아이템" , "명령어전체삭제" , "이름" , "줄수" , "명령어" , "명령어삭제" and "실행권한"
-# 	#In this line we need to put the arguments to complete.
-# 	loop {_completers::*}:
-# 		add loop-value to completions
-#
+# if you use /스코어보드, plz enable that command line
+
 on tab completer for "/rank":
-	set {_completers::*} to "add", "remove", "view", "익스트림", "베이직" and "프리미엄"
+	set {_completers::*} to "add", "remove", "view", "익스트림", "베이직", player and "프리미엄"
 	loop {_completers::*}:
 		add loop-value to completions
