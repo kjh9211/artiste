@@ -1,0 +1,26 @@
+options:
+    gui-name: "권한 그룹 관리"
+    temp-group: "tempGroup"
+
+# GUI 생성
+command /groupgui:
+    trigger:
+        open virtual chest inventory with size 3 named {@gui-name}
+        format slot 10 of player with stone named "임시 그룹 추가" with lore "임시 그룹을 추가합니다.":
+            on click:
+                execute console command "/lp user %player% parent add {@temp-group}"
+                close player's inventory
+                send "임시 그룹이 추가되었습니다!"
+        
+        format slot 11 of player with redstone named "임시 그룹 제거" with lore "임시 그룹을 제거합니다.":
+            on click:
+                execute console command "/lp user %player% parent remove {@temp-group}"
+                close player's inventory
+                send "임시 그룹이 제거되었습니다!"
+        
+        format slot 13 of player with emerald named "현재 그룹 확인" with lore "현재 그룹을 확인합니다.":
+            on click:
+                execute console command "/lp user %player% info"
+                close player's inventory
+                send "현재 그룹 정보를 확인했습니다."
+
