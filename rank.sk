@@ -1,3 +1,5 @@
+# made by kjh9211
+# made in artiste
 options:
     prefix: "&x&3&4&9&4&E&6[&x&4&B&8&F&D&FA&x&6&2&8&B&D&8R&x&7&9&8&6&D&1T&x&9&0&8&1&C&AI&x&A&7&7&C&C&2S&x&B&E&7&8&B&BT&x&D&5&7&3&B&4E&x&E&C&6&E&A&D]&r"
     ex_prefix: "&x&F&4&C&4&F&3[&x&F&5&B&8&F&4E&x&F&6&A&D&F&5X&x&F&7&A&1&F&6T&x&F&8&9&6&F&7R&x&F&9&8&A&F&7E&x&F&A&7&E&F&8M&x&F&B&7&3&F&9E&x&F&C&6&7&F&A]&r"
@@ -5,6 +7,7 @@ options:
     ba_prefix: "&x&F&3&9&0&4&F[&x&E&6&8&9&4&DB&x&D&9&8&3&4&AA&x&C&D&7&C&4&8S&x&C&0&7&5&4&5I&x&B&3&6&F&4&3C&x&A&6&6&8&4&0]&r"
 #
 on join:
+    send "This script made by kjh9211" to player
     if {RANK::rank::%player's uuid%} is not set:
         set {RANK::rank::%player's uuid%} to "기본"
 #
