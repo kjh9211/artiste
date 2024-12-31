@@ -1,1 +1,12 @@
+command /menu:
+  trigger:
+    set metadata tag "headGUI" of player to chest inventory with 3 rows named "&x&3&4&9&4&E&6[&x&4&B&8&F&D&FA&x&6&2&8&B&D&8R&x&7&9&8&6&D&1T&x&9&0&8&1&C&AI&x&A&7&7&C&C&2S&x&B&E&7&8&B&BT&x&D&5&7&3&B&4E&x&E&C&6&E&A&D]&r"
+    set slot 13 of metadata tag "headGUI" of player to player's skull named "&e%player%'s Head" with lore "&6Click to get your head."
+    open (metadata tag "headGUI" of player) to player
 
+#
+on inventory click:
+  if event-inventory = (metadata tag "headGUI" of player):
+    cancel event
+    if index of event-slot is 13:
+      give 1 of player's skull to player
